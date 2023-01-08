@@ -70,3 +70,8 @@ class ConversationCreate(_ConversationBase):
 
 class ConversationOut(ConversationCreate):
     pass
+
+class ConversationShowcase(BaseModel):
+    room_id : str
+    user: UserOut
+    vice_name: str
