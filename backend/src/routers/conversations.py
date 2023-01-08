@@ -31,6 +31,23 @@ def show_conversations(db: Session = Depends(_database.get_db), current_user: in
     query1 = db.query(_models.Conversation).join(u1, u1.id == _models.Conversation.user_1_id).join(u2, u2.id == _models.Conversation.user_2_id).join(v, v.id ==_models.Conversation.vice_id).where(u1.id == current_user.id).with_entities(u2.id, u2.display_name, u2.created_at, u2.description, v.name)
     query2 = db.query(_models.Conversation).join(u1, u1.id == _models.Conversation.user_1_id).join(u2, u2.id == _models.Conversation.user_2_id).join(v, v.id ==_models.Conversation.vice_id).where(u2.id == current_user.id).with_entities(u1.id, u1.display_name, u1.created_at, u1.description, v.name)
     query = query1.union(query2).all()
+
+    # This would be the equivalent query
+    # SELECT u2.id as current_id, u2.display_name as displayName, u2.description as description, v.name as vice
+    # FROM conversations
+    # JOIN users u1 on u1.id = conversations.user_1_id
+    # JOIN users u2 on u2.id = conversations.user_2_id
+    # JOIN vices v on conversations.vice_id = v.id
+    # WHERE u1.id = 2
+    # UNION
+    # SELECT u1.id as user_id, u1.display_name as displayName, u1.description as description, v.name as vice
+    # FROM conversations
+    # JOIN users u1 on u1.id = conversations.user_1_id
+    # JOIN users u2 on u2.id = conversations.user_2_id
+    # JOIN vices v on conversations.vice_id = v.id
+    # WHERE u2.id = 2
+    # ;
+
     result : List[_schemas.ConversationShowcase] = []
     print(query)
     for item in query:

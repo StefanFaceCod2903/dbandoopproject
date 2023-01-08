@@ -30,7 +30,6 @@ class Message(Base):
                         server_default=text("now()"))
     __table_args__ = (
         CheckConstraint('owner_id = user_2_id OR owner_id = user_1_id'),
-        UniqueConstraint('user_1_id', 'user_2_id', name='uix_2'),
         ForeignKeyConstraint([user_1_id, user_2_id],
                              [Conversation.user_1_id, Conversation.user_2_id], ondelete="CASCADE"),
     )

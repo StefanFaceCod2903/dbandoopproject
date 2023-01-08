@@ -25,6 +25,9 @@ class UserCreate(_UserBase):
     email: EmailStr
     password: str
 
+class UserUpdate(_UserBase):
+    display_name: str
+    description: str | None = None
 
 class UserOut(_UserBase):
     id: int
@@ -94,3 +97,25 @@ class ConversationShowcase(BaseModel):
     room_id: str
     user: UserOut
     vice_name: str
+
+class _MessageBase(BaseModel):
+    class Config:
+        orm_mode = True
+
+class MessageCreate(_MessageBase):
+    room_id : str
+    msg: str
+
+class MessageSend(_MessageBase):
+    owner_id: str
+    msg: str
+
+class MessageShow(MessageCreate):
+    created_at : str
+
+class MessageDatabase(_MessageBase):
+    owner_id: str
+    data: str
+    user_1_id: str
+    user_2_id: str
+    created_at : datetime

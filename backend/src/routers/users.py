@@ -25,6 +25,14 @@ def get_user_with_details(id : int=Path(), db: Session = Depends(_database.get_d
     else:
         return user_by_id.first()
 
-@router.get("/", response_model=List[_schemas.UserOut])
-def get_users_for_vice(vice_name : int=Query(),db: Session = Depends(_database.get_db)):
-    pass
+@router.get("/vice/{vice_id}", response_model=List[_schemas.UserOut])
+def get_users_for_vice(vice_id : int=Path(),db: Session = Depends(_database.get_db), user_id: int = Depends(_oauth2.get_current_user)):
+    query = db.query(_models.UserVice).join(_models.User).where(_models.UserVice.vice_id == vice_id and _models.UserVice.user_id != create_user.id).with_entities(_models.User.id, _models.User.created_at, _models.User.display_name, _models.User.description).all()
+    return query
+
+@router.patch("/", response_model=_schemas.UserOut)
+def update_user(new_user : _schemas.UserUpdate ,db: Session = Depends(_database.get_db), current_user: int = Depends(_oauth2.get_current_user)):
+    user_to_update = _services.get_user_by_id(db, current_user.id)
+    user_to_update.update(new_user.dict(exclude_unset=True), synchronize_session= False)
+    db.commit()
+    return user_to_update.first()
