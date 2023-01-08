@@ -6,7 +6,7 @@ from .routers import auth as _auth, users as _users, vices as _vices, user_vice 
 from collections import defaultdict
 from starlette.middleware.cors import CORSMiddleware
 
-#_models.Base.metadata.create_all(bind=_database.engine)
+# _models.Base.metadata.create_all(bind=_database.engine)
 
 app = FastAPI()
 
@@ -24,6 +24,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 class ConnectionManager:
     def __init__(self):
         self.rooms: Dict[str, List[WebSocket]] = {}
@@ -31,14 +32,14 @@ class ConnectionManager:
     async def connect(self, room_id: str, websocket: WebSocket):
         await websocket.accept()
         print("accepted")
-        if(room_id not in self.rooms.keys()):
+        if (room_id not in self.rooms.keys()):
             self.rooms[room_id] = []
         self.rooms[room_id].append(websocket)
 
     def disconnect(self, websocket: WebSocket, room_id):
         self.rooms[room_id].remove(websocket)
 
-    async def broadcast(self, room_id: str,data: str):
+    async def broadcast(self, room_id: str, data: str):
         for connection in self.rooms[room_id]:
             await connection.send_text(data)
 
