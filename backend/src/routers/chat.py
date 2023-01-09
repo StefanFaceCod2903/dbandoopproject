@@ -44,7 +44,7 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, current_user: s
     await manager.connect(room_id, websocket)
     try:
         while True:
-            data: _schemas.MessageCreate = await websocket.receive_json()
+            data = await websocket.receive_json()
             await manager.broadcast(room_id, data, db=db, current_user=current_user)
     except WebSocketDisconnect:
         manager.disconnect(websocket=websocket)

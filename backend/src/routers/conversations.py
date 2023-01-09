@@ -54,8 +54,7 @@ def show_conversations(db: Session = Depends(_database.get_db), current_user: in
     # JOIN users u1 on u1.id = conversations.user_1_id
     # JOIN users u2 on u2.id = conversations.user_2_id
     # JOIN vices v on conversations.vice_id = v.id
-    # WHERE u2.id = 2
-    # ;
+    # WHERE u2.id = 2;
 
     result: List[_schemas.ConversationShowcase] = []
     print(query)
