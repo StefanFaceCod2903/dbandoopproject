@@ -20,6 +20,10 @@ def create_user(user: _schemas.UserCreate, db: Session = Depends(_database.get_d
 def get_users(offset: int = 0, limit: int = 10, db: Session = Depends(_database.get_db), user_id: int = Depends(_oauth2.get_current_user)):
     return _services.get_users(db=db, limit=limit, offset=offset)
 
+@router.get("/me", response_model = _schemas.UserFullShowcase)
+def get_users(db: Session = Depends(_database.get_db), user_id: int = Depends(_oauth2.get_current_user)):
+    return _services.get_user_by_id(db=db, user_id=user_id.id).first()
+
 
 @router.get("/{id}", response_model=_schemas.UserShowcase)
 def get_user_with_details(id: int = Path(), db: Session = Depends(_database.get_db)):

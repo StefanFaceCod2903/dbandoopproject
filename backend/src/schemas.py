@@ -27,7 +27,7 @@ class UserCreate(_UserBase):
 
 
 class UserUpdate(_UserBase):
-    display_name: str
+    display_name: str | None = None
     description: str | None = None
 
 
@@ -126,3 +126,6 @@ class MessageDatabase(_MessageBase):
     user_1_id: str
     user_2_id: str
     created_at: datetime
+
+class UserFullShowcase(UserOut):
+    vices: List[ViceOut]

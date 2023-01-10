@@ -8,7 +8,7 @@ SECRET_KEY = settings.secret_key
 
 ALGORITM = settings.algoritm
 
-ACCESS_TOKEN_EXPIRE_MINUTES = settings.access_token_expire_minutes
+ACCESS_TOKEN_EXPIRE_DAYS = settings.access_token_expire_days
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/login")
 
@@ -16,7 +16,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="users/login")
 def create_access_token(data: dict):
     to_encode = data.copy()
 
-    expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    expire = datetime.utcnow() + timedelta(days=ACCESS_TOKEN_EXPIRE_DAYS)
     to_encode.update({"exp": expire})
 
     encoded_token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITM)
