@@ -20,7 +20,7 @@ def create_user(user: _schemas.UserCreate, db: Session = Depends(_database.get_d
 def get_users(offset: int = 0, limit: int = 10, db: Session = Depends(_database.get_db), user_id: int = Depends(_oauth2.get_current_user)):
     return _services.get_users(db=db, limit=limit, offset=offset)
 
-@router.get("/me", response_model = _schemas.UserFullShowcase)
+@router.get("/me", response_model=_schemas.UserOut)
 def get_users(db: Session = Depends(_database.get_db), user_id: int = Depends(_oauth2.get_current_user)):
     return _services.get_user_by_id(db=db, user_id=user_id.id).first()
 
@@ -45,6 +45,7 @@ def get_users_for_vice(vice_id: int = Path(), db: Session = Depends(_database.ge
 @router.patch("/", response_model=_schemas.UserOut)
 def update_user(new_user: _schemas.UserUpdate, db: Session = Depends(_database.get_db), current_user: int = Depends(_oauth2.get_current_user)):
     user_to_update = _services.get_user_by_id(db, current_user.id)
+    print(dict(new_user))
     user_to_update.update(new_user.dict(
         exclude_unset=True), synchronize_session=False)
     db.commit()

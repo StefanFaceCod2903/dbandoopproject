@@ -27,12 +27,9 @@ class ConnectionManager:
             user_1_id = int(room_id.split('-')[0])
             user_2_id = int(room_id.split('-')[1])
             new_message = _models.Message(
-                user_1_id=user_1_id, user_2_id=user_2_id, owner_id=int(current_user), data=data['msg'])
-            db.add(new_message)
-            db.commit()
-            db.refresh(new_message)
+                user_1_id=user_1_id, user_2_id=user_2_id, owner_id=int(current_user), data=data['data'])
             new_message_pydantic = _schemas.MessageShow(
-                room_id=room_id, msg=new_message.data, created_at=new_message.created_at.strftime("%d/%m/%Y, %H:%M"))
+                room_id=room_id, data=new_message.data, created_at=datetime.datetime.now().strftime("%d/%m/%Y, %H:%M"), owner_id=new_message.owner_id)
             await connection.send_json(new_message_pydantic.__dict__)
 
 
@@ -45,9 +42,16 @@ async def websocket_endpoint(websocket: WebSocket, room_id: str, current_user: s
     try:
         while True:
             data = await websocket.receive_json()
+            user_1_id = int(room_id.split('-')[0])
+            user_2_id = int(room_id.split('-')[1])
+            new_message = _models.Message(
+                user_1_id=user_1_id, user_2_id=user_2_id, owner_id=int(current_user), data=data['data'])
+            db.add(new_message)
+            db.commit()
+            db.refresh(new_message)
             await manager.broadcast(room_id, data, db=db, current_user=current_user)
     except WebSocketDisconnect:
-        manager.disconnect(websocket=websocket)
+        manager.disconnect(websocket=websocket, room_id=room_id)
         return
 
 

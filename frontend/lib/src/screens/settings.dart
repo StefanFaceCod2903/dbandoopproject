@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/src/models/index.dart';
 import 'package:frontend/src/screens/containers/user_container.dart';
+import 'package:frontend/src/screens/home.dart';
 import 'package:frontend/src/screens/login_screen.dart';
 import 'package:frontend/src/screens/settings_page.dart';
 
@@ -12,7 +13,7 @@ class Settings extends StatelessWidget {
     return UserContainer(
       builder: (BuildContext context, AppUser? user) {
         if (user == null) {
-          return const LoginScreen();
+          return const Home();
         } else {
           return const SettingsPage();
         }

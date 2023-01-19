@@ -52,108 +52,112 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         body: Container(
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  image: AssetImage('assets/images/login_background.jpg'),
-                  fit: BoxFit.fitHeight)),
-          child: Center(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 45),
-              child: SingleChildScrollView(
-                child:
+      decoration: const BoxDecoration(
+          image: DecorationImage(
+              image: AssetImage('assets/images/login_background.jpg'),
+              fit: BoxFit.fitHeight)),
+      child: Center(
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 45),
+          child: SingleChildScrollView(
+            child:
                 Column(mainAxisAlignment: MainAxisAlignment.start, children: [
+              Padding(
+                padding: const EdgeInsets.only(top: 55),
+                child: SvgPicture.asset('assets/svgs/Logo.svg'),
+              ),
+              Padding(
+                  padding: const EdgeInsets.only(top: 80.0),
+                  child: TextField(
+                    decoration: InputDecoration(
+                      labelText: "Email",
+                      errorText: emailError,
+                    ),
+                    controller: emailController,
+                    style: const TextStyle(color: Color(0xFFE9D8A6)),
+                  )),
+              Column(
+                children: [
                   Padding(
-                    padding: const EdgeInsets.only(top: 55),
-                    child: SvgPicture.asset('assets/svgs/Logo.svg'),
+                      padding: const EdgeInsets.only(top: 30),
+                      child: TextField(
+                        obscureText: true,
+                        decoration: InputDecoration(
+                          labelText: "Password",
+                          errorText: passwordError,
+                        ),
+                        controller: passwordController,
+                        style: const TextStyle(color: Color(0xFFE9D8A6)),
+                      )),
+                  Align(
+                    alignment: Alignment.topRight,
+                    child: TextButton(
+                        onPressed: () {},
+                        child: const Text(
+                          "Forgot password?",
+                          style: TextStyle(
+                              fontFamily: 'JosefinSans',
+                              color: Color(0xFFE9D8A6)),
+                        )),
+                  ),
+                  SizedBox(
+                    height: 62,
+                    width: 223,
+                    child: FloatingActionButton(
+                      backgroundColor: const Color(0xFF005F73),
+                      shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(Radius.circular(30))),
+                      onPressed: () {
+                        setState(() {
+                          if (!isEmailValid(emailController.text)) {
+                            emailError = "This is not a valid email!";
+                          } else {
+                            emailError = null;
+                          }
+                          passwordError = null;
+                          if (emailError == null && passwordError == null) {
+                            final Login action = Login(
+                                email: emailController.text,
+                                password: passwordController.text);
+                            StoreProvider.of<AppState>(context)
+                                .dispatch(action);
+                          }
+                        });
+                      },
+                      child: const Text(
+                        "Log In",
+                        style:
+                            TextStyle(color: Color(0xFFE9D8A6), fontSize: 20),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 100,
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 80.0),
-                    child: TextField(
-                      decoration: InputDecoration(
-                        labelText: "Email",
-                        errorText: emailError,
-                      ),
-                      controller: emailController,
-                      style: const TextStyle(color: Color(0xFFE9D8A6)),
-                    )),
-                  Column(
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(top: 30),
-                        child:TextField(
-                          decoration: InputDecoration(
-                            labelText: "Password",
-                            errorText: passwordError,
-                          ),
-                          controller: passwordController,
-                          style: const TextStyle(color: Color(0xFFE9D8A6)),
-                        )
-                      ),
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: TextButton(
-                            onPressed: () {},
-                            child: const Text(
-                              "Forgot password?",
-                              style: TextStyle(
-                                  fontFamily: 'JosefinSans',
-                                  color: Color(0xFFE9D8A6)),
-                            )),
-                      ),
-                      SizedBox(
-                        height: 62,
-                        width: 223,
-                        child: FloatingActionButton(
-                          backgroundColor: const Color(0xFF005F73),
-                          shape: const RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(30))),
-                          onPressed: () {
-                            setState(() {
-                              if (!isEmailValid(emailController.text)) {
-                                emailError = "This is not a valid email!";
-                              } else {
-                                emailError = null;
-                              }
-                                passwordError = null;
-                              if (emailError == null && passwordError == null) {
-                                final Login action =
-                                Login(email: emailController.text, password: passwordController.text);
-                                StoreProvider.of<AppState>(context).dispatch(action);
-                              }
-                            });
-                          },
-                          child: const Text(
-                            "Log In",
-                            style:
-                            TextStyle(color: Color(0xFFE9D8A6), fontSize: 20),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(height: 100,),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8.0),
-                        child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Text("Don't have an account?  "),
-                              GestureDetector(
-                                  onTap: () {
-                                    Navigator.of(context).pushNamed('/create-user');
-                                  },
-                                  child: const Text(
-                                    "Create now.",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        decoration: TextDecoration.underline),
-                                  ))
-                            ]),
-                      ),
-                    ],
-                  )
-                ]),
-              ),
-            ),
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("Don't have an account?  "),
+                          GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pushNamed('/create-user');
+                              },
+                              child: const Text(
+                                "Create now.",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    decoration: TextDecoration.underline),
+                              ))
+                        ]),
+                  ),
+                ],
+              )
+            ]),
           ),
-        ));
+        ),
+      ),
+    ));
   }
 }

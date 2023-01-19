@@ -94,7 +94,6 @@ class ConversationCreate(_ConversationBase):
 class ConversationOut(ConversationCreate):
     pass
 
-
 class ConversationShowcase(BaseModel):
     room_id: str
     user: UserOut
@@ -107,13 +106,14 @@ class _MessageBase(BaseModel):
 
 
 class MessageCreate(_MessageBase):
+    owner_id: str
     room_id: str
-    msg: str
+    data: str
 
 
 class MessageSend(_MessageBase):
     owner_id: str
-    msg: str
+    data: str
 
 
 class MessageShow(MessageCreate):
@@ -121,11 +121,18 @@ class MessageShow(MessageCreate):
 
 
 class MessageDatabase(_MessageBase):
-    owner_id: str
     data: str
     user_1_id: str
     user_2_id: str
     created_at: datetime
+    owner_id: str
 
 class UserFullShowcase(UserOut):
     vices: List[ViceOut]
+
+class UserViceShowCase(_UserVice):
+    id: int
+    display_name: str
+    description: str | None = None
+    vice_id: int
+    name: str

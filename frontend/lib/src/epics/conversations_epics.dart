@@ -13,16 +13,32 @@ class ConversationEpics {
     return combineEpics(
       <Epic<AppState>>[
         TypedEpic<AppState, GetConversationsStart>(_getConversationsStart),
+        TypedEpic<AppState, CreateConversationStart>(_createConversationStart),
       ],
     );
   }
 
-  Stream _getConversationsStart(Stream<GetConversationsStart> actions, EpicStore<AppState> store) {
+  Stream _getConversationsStart(
+      Stream<GetConversationsStart> actions, EpicStore<AppState> store) {
     return actions.flatMap((GetConversationsStart action) {
       return Stream<void>.value(null)
           .asyncMap((_) => _api.getConversations())
-          .map((List<Conversation> conversations) => GetConversations.successful(conversations))
-          .onErrorReturnWith((Object error, StackTrace stackTrace) => GetConversations.error(error, stackTrace));
+          .map((List<Conversation> conversations) =>
+              GetConversations.successful(conversations))
+          .onErrorReturnWith((Object error, StackTrace stackTrace) =>
+              GetConversations.error(error, stackTrace));
+    });
+  }
+
+  Stream _createConversationStart(
+      Stream<CreateConversationStart> actions, EpicStore<AppState> store) {
+    return actions.flatMap((CreateConversationStart action) {
+      return Stream<void>.value(null)
+          .asyncMap((_) =>
+              _api.createConversation(action.uid1, action.uid2, action.vice_id))
+          .map((_) => CreateConversation.successful())
+          .onErrorReturnWith((Object error, StackTrace stackTrace) =>
+              CreateConversation.error(error, stackTrace));
     });
   }
 }

@@ -12,9 +12,7 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-
 class _HomePageState extends State<HomePage> {
-
   @override
   void initState() {
     Store store = StoreProvider.of<AppState>(context, listen: false);
@@ -22,6 +20,7 @@ class _HomePageState extends State<HomePage> {
     print(store.state.conv.conversations);
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
     Store store = StoreProvider.of<AppState>(context);
@@ -32,35 +31,63 @@ class _HomePageState extends State<HomePage> {
         padding: const EdgeInsets.all(20.0),
         child: ListView.separated(
             separatorBuilder: (BuildContext context, int index) {
-              return const SizedBox(height: 15,);
+              return const SizedBox(
+                height: 15,
+              );
             },
             itemCount: store.state.conv.conversations.length,
             itemBuilder: (BuildContext context, int index) {
-              return Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: const Color(0xFF005F73),
+              return GestureDetector(
+                child: Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8),
+                    color: const Color(0xFF005F73),
+                  ),
+                  padding: const EdgeInsets.symmetric(vertical: 10),
+                  height: 75,
+                  width: 200,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      Stack(
+                        alignment: AlignmentDirectional.center,
+                        children: const <Widget>[
+                          CircleAvatar(
+                            radius: 25,
+                            backgroundColor: Color(0xFF0A9396),
+                          ),
+                          Align(
+                              child: Icon(
+                            Icons.person,
+                            size: 35,
+                          ))
+                        ],
+                      ),
+                      Text(
+                          "${store.state.conv.conversations[index].user.display_name}"),
+                      Icon(
+                        Icons.arrow_right,
+                        size: 30,
+                      ),
+                      Text("${store.state.conv.conversations[index].vice_name}")
+                    ],
+                  ),
                 ),
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                height: 75,
-                width: 200,
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Stack(
-                      alignment: AlignmentDirectional.center,
-                      children: const <Widget>[
-                        CircleAvatar(radius: 25, backgroundColor: Color(0xFF0A9396),),
-                        Align(child: Icon(Icons.person, size: 35,))
-                      ],
-                    ),
-                    Text("${store.state.conv.conversations[index].user.display_name}"),
-                    Icon(Icons.arrow_right, size: 30,),
-                    Text("Smoking")
-                  ],
-                ),
+                onTap: () async {
+                  print(store.state.conv.conversations[index].room_id);
+                  store.dispatch(GetMessages(
+                      roomId: store.state.conv.conversations[index].room_id));
+                  await store.onChange
+                      .where((dynamic state) => !state.mess.isLoading)
+                      .first;
+                  Navigator.pushNamed(context, '/message', arguments: {
+                    "userName":
+                        store.state.conv.conversations[index].user.display_name,
+                    "roomId": store.state.conv.conversations[index].room_id
+                  });
+                },
               );
-        }),
+            }),
       ),
     );
   }

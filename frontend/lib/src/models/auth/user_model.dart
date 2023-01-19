@@ -7,8 +7,8 @@ class AppUser with _$AppUser {
     DateTime? created_at,
     String? display_name,
     String? description,
-    @Default([]) List<Vice> vices
-}) = AppUser$;
+  }) = AppUser$;
 
-  factory AppUser.fromJson(Map<dynamic, dynamic> json) => _$AppUserFromJson(Map<String, dynamic>.from(json));
+  factory AppUser.fromJson(Map<dynamic, dynamic> json) =>
+      _$AppUserFromJson(Map<String, dynamic>.from(json));
 }

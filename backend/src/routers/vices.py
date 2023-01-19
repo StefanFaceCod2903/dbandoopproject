@@ -30,6 +30,6 @@ def get_vices(offset: int = 0, limit: int = 10, db: Session = Depends(_database.
 
 @router.get("/my", response_model=List[_schemas.ViceOut])
 def get_my_vices(db: Session = Depends(_database.get_db), current_user: int = Depends(_oauth2.get_current_user)):
-    my_vices = db.query(_models.Vice).join(_models.UserVice, _models.Vice.id == _models.UserVice.vice_id,isouter=True).filter(current_user.id == _models.UserVice.user_id).all()
+    my_vices = db.query(_models.Vice).join(_models.UserVice, _models.Vice.id == _models.UserVice.vice_id,isouter=True).filter(current_user.id == _models.UserVice.user_id)
+    return my_vices.all()
 
-    return my_vices
