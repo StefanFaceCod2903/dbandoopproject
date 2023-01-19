@@ -1,4 +1,5 @@
-# dbandoopproject
+# YourPal
+
 This is a project for university. 
 
 I made a personal development mobile app. 
